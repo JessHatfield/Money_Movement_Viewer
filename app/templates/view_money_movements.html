@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th scope="col">Modified At (UTC)</th>
+            <th scope="col">Amount</th>
+            <th scope="col">From</th>
+            <th scope="col"></th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+
+
+        {% for movement in money_movements %}
+            <tr id={{ movement.id }}>
+                <td>{{ movement.modified_at_datetime_utc }}</td>
+                <td>{{ movement.money_amount|string + " " + movement.iso_4217_currency_code }}</td>
+                <td>{{ movement.sender.first_name + " " + movement.sender.last_name }}</td>
+                <td><a href="/view_money_movement/{{movement.id}}">Details</a></td>
+            </tr>
+
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+
+{% endblock %}

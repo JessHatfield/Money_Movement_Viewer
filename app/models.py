@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 from decimal import Decimal
 
-from app import db
+from app.extensions import db
 
 
 class MoneyMovement(db.Model):
@@ -22,6 +22,7 @@ class MoneyMovement(db.Model):
 
     origin_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+
 
     @classmethod
     def create(cls, currency_code: str, money_amount: Decimal, sender: Person, receiver: Person) -> MoneyMovement:
