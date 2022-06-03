@@ -12,14 +12,18 @@
                 <a class="navbar-brand" href="#">Money Movement Viewer</a>
             </div>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for("money_movement.view_all_money_movements") }}">View Movements</a></li>
-            </ul>
+
             <ul class=" nav navbar-nav navbar-right">
+
+
                 {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                 {% else %}
+
+                    <li><a>Welcome {{ current_user.name }}</a></li>
+                    <li><a href="{{ url_for("money_movement.view_all_money_movements") }}">View Movements</a></li>
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+
                 {% endif %}
             </ul>
         </div>

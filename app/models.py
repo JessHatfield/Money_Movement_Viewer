@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import datetime
 from time import time
 from decimal import Decimal
 
@@ -9,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db, login
 import app
+
 
 class MoneyMovement(db.Model):
     """
@@ -74,10 +77,11 @@ class Person(db.Model):
                                                backref='receiver', lazy='dynamic')
 
 
-class User(db.Model,UserMixin):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    name = db.Column(db.Text, nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -86,8 +90,10 @@ class User(db.Model,UserMixin):
         return check_password_hash(self.password_hash, password)
 
     @classmethod
-    def create(cls, email: str):
-        return User(email=email)
+    def create(cls, email: str, name: str, password: str) -> User:
+        user = User(email=email, name=name)
+        user.set_password(password)
+        return user
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
