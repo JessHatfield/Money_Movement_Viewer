@@ -19,7 +19,7 @@ def create_app(config_class=Config):
 
     register_extensions(app)
 
-    app.logger.setLevel(logging.INFO)
+    app.logger.setLevel(logging.DEBUG)
 
     app.register_blueprint(route_bp)
 

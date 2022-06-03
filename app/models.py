@@ -23,20 +23,26 @@ class MoneyMovement(db.Model):
     origin_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('person.id'))
 
+    user_note = db.Column(db.Text, nullable=True)
+
+
 
     @classmethod
-    def create(cls, currency_code: str, money_amount: Decimal, sender: Person, receiver: Person) -> MoneyMovement:
+    def create(cls, currency_code: str, money_amount: Decimal, sender: Person, receiver: Person,
+               user_note: str = "") -> MoneyMovement:
         """
+
 
         :param currency_code: An iso_4127 currency code - https://www.xe.com/iso4217.php
         :param money_amount: A decimal amount of a currency. Currency denomination specified by currency_code
         :param sender: An instance of the Person class "sending" the money amount
         :param receiver: An instance of the Person call "receiving" the money amount
+        :param user_note: A user_note with no fixed length containing agent notes on the money movement
         :return: An instance of the MoneyMovement Class representing the money movement between two persons
         """
 
         money_movement = MoneyMovement(iso_4217_currency_code=currency_code, money_amount=money_amount,
-                                       modified_at_datetime_utc=datetime.datetime.utcnow())  # Store as UTC to allow for conversion to multiple timezones within view
+                                       modified_at_datetime_utc=datetime.datetime.utcnow(),user_note=user_note)  # Store as UTC to allow for conversion to multiple timezones within view
 
         sender.money_movements_sent.append(money_movement)
         receiver.money_movements_received.append(money_movement)

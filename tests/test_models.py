@@ -64,7 +64,23 @@ class MoneyMovementTests(unittest.TestCase):
         self.assertEqual(movement_in_db.money_amount, Decimal("0.002"))
         self.assertEqual(movement_in_db.iso_4217_currency_code, "GBP")
 
+    def test_include_user_note_on_creation(self):
+        sender = Person(first_name="jeff", last_name="bezo")
+        receiver = Person(first_name="Clément", last_name="Pergaud")
 
+        example_user_note = "Invalid Payment From Jeff Bezo to Clément. \n" \
+                            "Should actually be sent to X Æ A-12 😁"
+
+        # can we store and then retrieve this user note
+        new_movement = MoneyMovement.create(sender=sender, receiver=receiver, currency_code="GBP", money_amount=100,
+                                            user_note=example_user_note
+                                            )
+
+        db.session.add(new_movement)
+        db.session.commit()
+
+        movement_in_db = MoneyMovement.query.first()
+        self.assertEqual(bytes(movement_in_db.user_note, "utf-8"), bytes(example_user_note, "utf-8"))
 
 
 if __name__ == '__main__':
