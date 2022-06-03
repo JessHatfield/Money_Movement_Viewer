@@ -1,9 +1,14 @@
 from __future__ import annotations
-import datetime
+from time import time
 from decimal import Decimal
 
-from app.extensions import db
+import jwt
+from flask import current_app
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
+from app.extensions import db, login
+import app
 
 class MoneyMovement(db.Model):
     """
@@ -25,8 +30,6 @@ class MoneyMovement(db.Model):
 
     user_note = db.Column(db.Text, nullable=True)
 
-
-
     @classmethod
     def create(cls, currency_code: str, money_amount: Decimal, sender: Person, receiver: Person,
                user_note: str = "") -> MoneyMovement:
@@ -42,7 +45,8 @@ class MoneyMovement(db.Model):
         """
 
         money_movement = MoneyMovement(iso_4217_currency_code=currency_code, money_amount=money_amount,
-                                       modified_at_datetime_utc=datetime.datetime.utcnow(),user_note=user_note)  # Store as UTC to allow for conversion to multiple timezones within view
+                                       modified_at_datetime_utc=datetime.datetime.utcnow(),
+                                       user_note=user_note)  # Store as UTC to allow for conversion to multiple timezones within view
 
         sender.money_movements_sent.append(money_movement)
         receiver.money_movements_received.append(money_movement)
@@ -68,3 +72,30 @@ class Person(db.Model):
                                            backref='sender', lazy='dynamic')
     money_movements_received = db.relationship('MoneyMovement', foreign_keys='MoneyMovement.receiver_id',
                                                backref='receiver', lazy='dynamic')
+
+
+class User(db.Model,UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    @classmethod
+    def create(cls, email: str):
+        return User(email=email)
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256')
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))

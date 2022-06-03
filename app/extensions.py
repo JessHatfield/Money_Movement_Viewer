@@ -3,9 +3,14 @@
 # https://stackoverflow.com/questions/42909816/can-i-avoid-circular-imports-in-flask-and-sqlalchemy
 
 from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()
 bootstrap = Bootstrap()
+mail = Mail()
+login = LoginManager()
+login.login_view = 'auth.login'
