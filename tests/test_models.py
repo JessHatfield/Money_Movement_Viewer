@@ -2,13 +2,44 @@ import unittest
 from decimal import Decimal
 
 from app import create_app, db
-from app.models import Person, MoneyMovement
+from app.models import Person, MoneyMovement, User
 
 
 class TestConfig():
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://money_movement_viewer_admin:password@localhost:3306/money_movement_viewer_test?charset=utf8mb4"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     API_DOMAIN = "http://127.0.0.1:5000"
+
+
+class UserTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.app = self.app.test_client()
+        db.create_all()
+
+    def tearDown(self) -> None:
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_can_create_user_with_password_and_password_can_validate(self):
+        user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
+
+        db.session.add(user)
+        db.session.commit()
+        user_from_db = User.query.first()
+        self.assertEqual(user_from_db.email, user.email)
+        self.assertEqual(user_from_db.name, user.name)
+
+        # We store password as salted hash preventing us from just hard-coding hash in assertEqual statement
+        # We need to use the check_password method in the Model instead. (Emulating how it is called in rest of application)
+        failing_check = user_from_db.check_password("wrong password")
+        passing_check = user_from_db.check_password("password")
+
+        self.assertEqual(failing_check, False)
+        self.assertEqual(passing_check, True)
 
 
 class MoneyMovementTests(unittest.TestCase):
