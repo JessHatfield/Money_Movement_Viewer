@@ -123,6 +123,90 @@ class TestAuthentication(unittest.TestCase):
             response.text)
 
 
+class TestViewSingleMoneyMovement(unittest.TestCase):
+    def setUp(self) -> None:
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+        self.app = self.app.test_client()
+
+        db.create_all()
+
+    def tearDown(self) -> None:
+        db.session.remove()
+        db.drop_all()
+
+    def test_can_view_details_for_single_money_movement(self):
+        new_user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        generate_dummy_data()
+
+        self.app.post('/login',
+                      data={"username": "joshuahatfield.jh@gmail.com",
+                            "password": "password",
+                            },
+                      follow_redirects=True)
+
+        money_movements_table_page = self.app.get('/view_money_movement/1')
+
+        self.assertEqual(money_movements_table_page.status_code, 200)
+
+        self.assertIn("""<tr id=1>
+            <td>2022-06-03 17:17:05</td>
+            <td>0.0010 GBP</td>
+            <td>Jeffery Bezos</td>
+            <td>X Æ A-12 Musk</td>
+
+        </tr>""", money_movements_table_page.text)
+
+    def test_user_can_view_and_update_notes_on_movement(self):
+        new_user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        sender = Person(first_name="Josh", last_name="Hatfield")
+        receiver = Person(first_name="X Æ A-12", last_name="Musk")
+        movement = MoneyMovement.create(user_note="First user note", currency_code="GBP", money_amount=100,
+                                        sender=sender, receiver=receiver)
+
+        # hardcode datetime to allow for repeated running of integration test
+        movement.modified_at_datetime_utc = datetime.datetime.strptime("2022-06-03 17:17:05", "%Y-%m-%d %H:%M:%S")
+
+        db.session.add(movement)
+        db.session.commit()
+
+        self.app.post('/login',
+                      data={"username": "joshuahatfield.jh@gmail.com",
+                            "password": "password",
+                            },
+                      follow_redirects=True)
+
+        money_movements_table_page = self.app.get('/view_money_movement/1')
+
+        # check that the user note has rendered
+        self.assertIn("First user note", money_movements_table_page.text)
+
+        # update the note
+        money_movements_table_page = self.app.post('/view_money_movement/1',
+                                                   data={"user_note": "Second User Note"
+                                                         },
+                                                   follow_redirects=True)
+        # Check success message is present
+        self.assertIn("User Note Updated Successfully", money_movements_table_page.text)
+
+        # check new note visible on page
+        self.assertIn('Second User Note', money_movements_table_page.text)
+
+        # check new note is stored in database
+        db_movement = MoneyMovement.query.first()
+        self.assertEqual(db_movement.user_note, "Second User Note")
+
+
 class TestViewAllMoneyMovements(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -138,7 +222,25 @@ class TestViewAllMoneyMovements(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_money_movements_viewable_when_logged_in(self):
+    def test_users_name_visible_when_logged_in(self):
+        new_user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        generate_dummy_data()
+
+        money_movements_table_page = self.app.post('/login?next=%2F',
+                                                   data={"username": "joshuahatfield.jh@gmail.com",
+                                                         "password": "password",
+                                                         },
+                                                   follow_redirects=True)
+
+        self.assertEqual(money_movements_table_page.status_code, 200)
+
+        self.assertIn('Welcome Josh', money_movements_table_page.text)
+
+    def test_all_money_movements_viewable_when_logged_in(self):
         new_user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
 
         db.session.add(new_user)
