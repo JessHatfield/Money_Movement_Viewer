@@ -30,10 +30,10 @@ def view_all_money_movements():
 def edit_money_movement_note(movement_id):
     user_note_form = MoneyMovementNoteForm()
 
+    money_movement = MoneyMovement.query.filter_by(id=movement_id).first()
+
     if user_note_form.validate_on_submit():
         new_user_note = user_note_form.data['user_note']
-
-        money_movement = MoneyMovement.query.filter_by(id=movement_id).first()
 
         money_movement.user_note = new_user_note
 
@@ -46,6 +46,9 @@ def edit_money_movement_note(movement_id):
         flash("User Note Updated Successfully")
 
         return render_template("money_movements/edit_money_movement.html", money_movement=money_movement, form=user_note_form)
+
+    return render_template("money_movements/edit_money_movement.html", money_movement=money_movement,
+                           form=user_note_form)
 
 
 @bp.route('/view_money_movement/<movement_id>', methods=['GET'])

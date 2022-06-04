@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # This gives us the root directory of the project
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-print(basedir)
+
 load_dotenv(os.path.join(basedir, '.env'))
 
 

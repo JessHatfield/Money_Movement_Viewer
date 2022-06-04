@@ -27,6 +27,4 @@ def create_app(config_class=Config):
     app.register_blueprint(route_bp)
     app.register_blueprint(auth_bp)
 
-    print(app.config)
-
     return app
