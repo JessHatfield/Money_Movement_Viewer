@@ -79,3 +79,89 @@ The application can then be accessed at http://0.0.0.0:5000.
 
 
 
+
+## Developing Locally
+
+This guide assumes you have already installed python 3.8 (or greater), pip + virtualenv.
+
+We also assume you have installed MYSQL version 5.7 (or greater).
+
+Clone the git repository
+
+```bash
+  git clone https://github.com/JoshHatfield/Money_Movement_Viewer.git
+```
+
+Go to the project directory
+
+```bash
+  cd Money_Movement_Viewer
+```
+
+Create a new virtual environment
+
+```bash
+  python -m venv /money_movement_dev_env
+```
+
+Activate this new virtual environment
+
+```bash
+python -m venv /money_movement_dev_env
+```
+
+Install project dependencies
+
+```bash
+python -m pip install -r /app/requirements.txt
+```
+
+
+Create Development + Test Databases
+
+```bash
+
+Commands to be added
+```
+
+Create new database user
+```bash
+
+Commands to be added
+```
+
+
+Give this new user access to databases
+```bash
+
+Commands to be added
+```
+
+Populate dev database with dummy database
+
+```
+python setup_db.py
+```
+
+
+Run Flask Integration Tests
+
+```
+
+python3.8 -m unittest tests/test_routes.py
+python3.8 -m unittest tests/test_models.py
+
+```
+
+Start The Flask App
+
+```bash
+  python webapp.py
+```
+
+
+The application can be now accessed at http://127.0.0.1:5000
+
+   * A premade user account has been created and can be used to login. 
+
+   * The username is "joshuahatfield.jh@gmail.com" and the password is "password".
