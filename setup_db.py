@@ -32,8 +32,7 @@ app.logger.info(f"MoneyMovement Objects Have Been Inserted Into Database At {app
 
 app.logger.info("Creating User Account")
 
-new_user = User.create(email="joshuahatfield.jh@gmail.com",name="Josh",password="password")
-
+new_user = User.create(email="joshuahatfield.jh@gmail.com", name="Josh", password="password")
 
 db.session.add(new_user)
 db.session.commit()
