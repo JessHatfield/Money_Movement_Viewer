@@ -87,6 +87,7 @@ class User(db.Model, UserMixin):
     def check_password(self, password: str) -> bool:
         valid = check_password_hash(self.password_hash, password)
 
+        current_app.logger.info(f"Password For {self} Does Not Match Stored Hash")
         current_app.logger.debug({"message": f"Password Does Not Match Stored Hash", "user": f"{self}"})
 
         return valid
@@ -101,5 +102,7 @@ class User(db.Model, UserMixin):
 @login.user_loader
 def load_user(id):
     user = User.query.get(int(id))
-    current_app.logger.debug({"message": f"User Retrieved By Flask Login", "id_given": id, "user": f"{user}"})
+    current_app.logger.info(f"{user} Retrieved By Flask_Login User Loader")
+    current_app.logger.debug(
+        {"message": f"User Retrieved By Flask_Login User Loader", "id_given": id, "user": f"{user}"})
     return user
