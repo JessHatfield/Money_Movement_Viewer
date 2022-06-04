@@ -14,7 +14,7 @@ A small webapp for viewing money_movements between two people. Written using Fla
 * View details for an individual money_movement detailing the above plus:
     * Receiving person.
 
-* Edit user notes per money_movement.
+* User can add notes per money_movement (and can use unicode characters).
 
 * User Authentication
     * Pre-created user login + logout.
