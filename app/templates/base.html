@@ -35,5 +35,7 @@
 
 {#content is Flask-Bootstraps base templat block for content - https://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks#}
 {% block content %}
-    {% block app_content %}{% endblock %}
+    <div class="container">
+        {% block app_content %}{% endblock %}
+    </div>
 {% endblock %}

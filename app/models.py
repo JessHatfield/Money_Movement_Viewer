@@ -1,16 +1,14 @@
 from __future__ import annotations
 
 import datetime
-from time import time
+
 from decimal import Decimal
 
-import jwt
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db, login
-import app
 
 
 class MoneyMovement(db.Model):
@@ -83,11 +81,15 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     name = db.Column(db.Text, nullable=False)
 
-    def set_password(self, password):
+    def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def check_password(self, password: str) -> bool:
+        valid = check_password_hash(self.password_hash, password)
+
+        current_app.logger.debug({"message": f"Password Does Not Match Stored Hash", "user": f"{self}"})
+
+        return valid
 
     @classmethod
     def create(cls, email: str, name: str, password: str) -> User:
@@ -96,7 +98,8 @@ class User(db.Model, UserMixin):
         return user
 
 
-
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    user = User.query.get(int(id))
+    current_app.logger.debug({"message": f"User Retrieved By Flask Login", "id_given": id, "user": f"{user}"})
+    return user
