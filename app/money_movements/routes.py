@@ -1,7 +1,7 @@
 from flask_login import login_required, current_user
 
-from app.forms import MoneyMovementNoteForm
-from app.routes import bp
+from app.money_movements.forms import MoneyMovementNoteForm
+from app.money_movements import bp
 # allows us to log messages via the logger instance attached to global app
 from flask import current_app, render_template, flash
 from app.models import MoneyMovement
@@ -22,7 +22,7 @@ def view_all_money_movements():
     money_movements = MoneyMovement.query.all()
 
     current_app.logger.info(f"Returning Money Movements For {current_user}")
-    return render_template("view_money_movements.html", money_movements=money_movements)
+    return render_template("money_movements/view_money_movements.html", money_movements=money_movements)
 
 
 @bp.route('/view_money_movement/<movement_id>', methods=['POST'])
@@ -45,7 +45,7 @@ def edit_money_movement_note(movement_id):
 
         flash("User Note Updated Successfully")
 
-        return render_template("edit_money_movement.html", money_movement=money_movement, form=user_note_form)
+        return render_template("money_movements/edit_money_movement.html", money_movement=money_movement, form=user_note_form)
 
 
 @bp.route('/view_money_movement/<movement_id>', methods=['GET'])
@@ -55,4 +55,4 @@ def view_single_money_movement(movement_id):
     money_movement = MoneyMovement.query.filter_by(id=movement_id).first()
 
     current_app.logger.info(f"Returning {money_movement} For {current_user}")
-    return render_template("edit_money_movement.html", money_movement=money_movement, form=user_note_form)
+    return render_template("money_movements/edit_money_movement.html", money_movement=money_movement, form=user_note_form)

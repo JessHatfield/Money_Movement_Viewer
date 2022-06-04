@@ -3,8 +3,8 @@ import logging
 from flask import Flask
 
 from app.extensions import db, migrate, bootstrap, mail, login
-from config import Config
-from app.routes import bp as route_bp
+from app.config import Config
+from app.money_movements import bp as route_bp
 from app.auth import bp as auth_bp
 
 
@@ -26,5 +26,7 @@ def create_app(config_class=Config):
 
     app.register_blueprint(route_bp)
     app.register_blueprint(auth_bp)
+
+    print(app.config)
 
     return app

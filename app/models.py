@@ -87,8 +87,9 @@ class User(db.Model, UserMixin):
     def check_password(self, password: str) -> bool:
         valid = check_password_hash(self.password_hash, password)
 
-        current_app.logger.info(f"Password For {self} Does Not Match Stored Hash")
-        current_app.logger.debug({"message": f"Password Does Not Match Stored Hash", "user": f"{self}"})
+        if not valid:
+            current_app.logger.info(f"Password For {self} Does Not Match Stored Hash")
+            current_app.logger.debug({"message": f"Password Does Not Match Stored Hash", "user": f"{self}"})
 
         return valid
 

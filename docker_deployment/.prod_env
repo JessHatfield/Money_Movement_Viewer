@@ -1,3 +1,2 @@
 SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:root@db:3306/money_movement_viewer_prod?charset=utf8mb4"
-SQLALCHEMY_TEST_DATABASE_URI="mysql+pymysql://root:root@db:3306/money_movement_viewer_test?charset=utf8mb4"
 SECRET_KEY="You-Will-Never-Guess-This"
