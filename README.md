@@ -214,9 +214,9 @@ The application can be now accessed at http://127.0.0.1:5000
 ## Additional Features Which Would Be Added With More Time
 
 * Money Movement Search
-    * Novus has 30,000 users. We can assume then that there are tens (or hundreds!) of thousands of money movements each
+    * Novus has 30,000 users. We can assume then that there are tens (or hundreds!) of thousands of money movements generated each
       month. Far too many to click through page by page.
-    * Users of the money movement viewer would benefit from being able to search through results for individual
+    * Users of the money movement viewer would therefore benefit from being able to search through results for individual
       movements
     * A basic search functionality could be implemented using SQL "LIKE" statements. An API based example can be
       found [here]("https://github.com/JoshHatfield/Covid19-Research-Paper-Viewer/blob/e4d6c70784e9ee57dc4980fc88cf4108cec82a67/search_api/app/routes/routes.py#L41)
