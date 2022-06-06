@@ -218,8 +218,8 @@ The application can be now accessed at http://127.0.0.1:5000
 Why did we choose to build a Dynamic webapp vs a SPA?
 
 * I normally build Single Page Applications using React + a Flask API, however (based on the feedback I had gotten) it
-  seems that the Novus team prefer to build dynamic webapps
-* The application requirements where simple enough that they could be easily implemented using flask + jinja2
+  seems that the Novus team prefer to build dynamic webapps.
+* The application requirements where simple enough that they could be easily implemented using flask + jinja2.
 * If the technical benefits are not great enough it makes most sense to build web-apps using the technology + approach
   used most frequently by the rest of the team.
 * Therefore, choosing flask + jinja2 seemed like the most pragmatic option.
@@ -236,9 +236,9 @@ Why did I choose to use Flask-Login vs using a third party provider?
 Why did I use MYSQL?
 
 * Users can potentially make simultaneous writes to the database however file based databases (
-SQlIte) do not allow for concurrent writes? * I am most familiar with MySQL hence I chose to use it for this app. * Had
-there not been a requirement for concurrent writes I would have chosen SQlite as it is simpler to deploy via docker
-+ setup locally and offers similar read performance to MySQL.
+SQlIte) do not allow for concurrent writes? * I am most familiar with MySQL hence I chose to use it for this app. 
+* Had there not been a requirement for concurrent writes I would have chosen SQlite as it is simpler to deploy via docker
+and setup locally and offers similar read performance to MySQL.
 
 ## Additional Features Which Would Be Added With More Time
 
@@ -248,8 +248,7 @@ there not been a requirement for concurrent writes I would have chosen SQlite as
     * Users of the money movement viewer would therefore benefit from being able to search through results for
       individual movements.
     * A basic search functionality could be implemented using SQL "LIKE" statements. An API based example can be
-      found [here]("https://github.com/JoshHatfield/Covid19-Research-Paper-Viewer/blob/e4d6c70784e9ee57dc4980fc88cf4108cec82a67/search_api/app/routes/routes.py#L41)
-      .
+      [found here](https://github.com/JoshHatfield/Covid19-Research-Paper-Viewer/blob/e4d6c70784e9ee57dc4980fc88cf4108cec82a67/search_api/app/routes/routes.py#L41).
     * Users could then search for money movement using sender/receiver names or currency amounts.
     * A more advanced search could be achieved by moving to a pre-built search + analytics engine like elasticsearch.
     * This could allow the user to construct more complex queries (for example show me all the movements over amount X
