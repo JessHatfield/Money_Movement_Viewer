@@ -250,7 +250,7 @@ and setup locally and offers similar read performance to MySQL.
     * A basic search functionality could be implemented using SQL "LIKE" statements. An API based example can be
       [found here](https://github.com/JoshHatfield/Covid19-Research-Paper-Viewer/blob/e4d6c70784e9ee57dc4980fc88cf4108cec82a67/search_api/app/routes/routes.py#L41).
     * Users could then search for money movement using sender/receiver names or currency amounts.
-    * A more advanced search could be achieved by moving to a pre-built search + analytics engine like elasticsearch.
+    * A more advanced search could be achieved by moving to a pre-built search + analytics engine like Elasticsearch.
     * This could allow the user to construct more complex queries (for example show me all the movements over amount X
       for user Z between dates a + b).
     * This in turn would reduce the time to find key information whilst running audits. Enhancing the usability of the
