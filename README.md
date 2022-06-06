@@ -1,4 +1,3 @@
-
 # Money Movement Viewer
 
 A small webapp for viewing money_movements between two people. Written using Flask + Jinja2.
@@ -36,12 +35,12 @@ A small webapp for viewing money_movements between two people. Written using Fla
 * Flask-Login used for authentication.
 * Unittest used for integration tests.
 * Docker Compose + Gunicorn + Ubuntu 20.04 used for deployment.
+
 ## Getting Started
 
 The application has been dockerised for ease of use
 
 This guide assumes you have already installed docker + docker compose.
-
 
 ### Instructions
 
@@ -55,13 +54,13 @@ Build the docker image containing the flask application.
 
 ```bash
 cd Money_Movement_Viewer
-docker compose build
+sudo docker compose build
 ```
 
 Run the Flask app and MySQL database containers using docker-compose.
 
 ```bash
-docker compose up
+sudo docker compose up
 
 ------------------------------------------
 money_movement_viewer-app-1  | [2022-06-04 14:35:30 +0000] [10] [INFO] Starting gunicorn 20.1.0
@@ -71,22 +70,20 @@ money_movement_viewer-app-1  | [2022-06-04 14:35:30 +0000] [12] [INFO] Booting w
 
 
 ```
+
 The application can then be accessed at http://0.0.0.0:5000.
 
-   * A premade user account has been created and can be used to login. 
+* A premade user account has been created and can be used to login.
 
-   * The username is "joshuahatfield.jh@gmail.com" and the password is "password".
-
-
-
+* The username is "joshuahatfield.jh@gmail.com" and the password is "password".
 
 ## Developing Locally
 
-This guide assumes you have already installed python 3.8 (or greater), pip + virtualenv.
+This guide assumes you have already installed python 3.8 (or greater), pip + python3.8-venv.
 
 We also assume you have installed MYSQL version 5.7 (or greater).
 
-Clone the git repository
+Clone the git repository (skip this step if you have already cloned it)
 
 ```bash
   git clone https://github.com/JoshHatfield/Money_Movement_Viewer.git
@@ -101,67 +98,150 @@ Go to the project directory
 Create a new virtual environment
 
 ```bash
-  python -m venv /money_movement_dev_env
+  sudo python3.8 -m venv ./money_movement_dev_env
 ```
 
 Activate this new virtual environment
 
 ```bash
-python -m venv /money_movement_dev_env
+source ./money_movement_dev_env/bin/activate
 ```
 
 Install project dependencies
 
 ```bash
-python -m pip install -r /app/requirements.txt
+sudo python3.8 -m pip install -r app/requirements.txt
 ```
-
 
 Create Development + Test Databases
 
+Enter the MySQL shell
+
 ```bash
 
-Commands to be added
+sudo mysql
+
+
+```
+
+Create the development database
+
+```bash
+CREATE DATABASE money_movement_viewer_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Create the test database
+
+```bash
+CREATE DATABASE money_movement_viewer_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 Create new database user
+
 ```bash
 
-Commands to be added
+CREATE USER 'money_movement_viewer_admin'@'localhost' IDENTIFIED BY 'password';
 ```
 
+Give this new user access to test and dev databases
 
-Give this new user access to databases
 ```bash
 
-Commands to be added
+GRANT ALL PRIVILEGES ON money_movement_viewer_dev.* TO 'money_movement_viewer_admin'@'localhost';
+GRANT ALL PRIVILEGES ON money_movement_viewer_test.* TO 'money_movement_viewer_admin'@'localhost';
 ```
 
-Populate dev database with dummy database
+Create a .env file within the /app directory
 
-```
-python setup_db.py
+```bash
+sudo touch app/.env
 ```
 
+Add the Database URI For The Development Database + a Secret Key for Flask-WTF CRSF protection to the .env file.
+
+```bash
+SQLALCHEMY_DATABASE_URI="mysql+pymysql://money_movement_viewer_admin:password@localhost:3306/money_movement_viewer_dev?charset=utf8mb4"
+SECRET_KEY="This-Is-A-Secret-Key-For-Flask-CSRF"
+```
+
+Populate the development database with mocked data.
+
+```bash
+sudo python3.8 setup_db.py
+
+-------------------------------------------------
+Creating Tables Within Database
+Creating Mock MoneyMovement Objects
+Money Movement Objects Have Been Inserted Into Database
+Creating User Account
+User Object Has Been Inserted Into Database
+```
 
 Run Flask Integration Tests
 
+```bash
+sudo python3.8 -m unittest tests/test_routes.py
+
+
+-------------------------------------------------
+Ran 7 Tests in 6.5s
+
+OK
 ```
 
-python3.8 -m unittest tests/test_routes.py
-python3.8 -m unittest tests/test_models.py
+```bash
+sudo python3.8 -m unittest tests/test_models.py
+
+-------------------------------------------------
+Ran 4 Tests in 4s
+
+OK
 
 ```
 
 Start The Flask App
 
 ```bash
-  python webapp.py
+sudo python3.8 -m flask run
 ```
-
 
 The application can be now accessed at http://127.0.0.1:5000
 
-   * A premade user account has been created and can be used to login. 
+* A premade user account has been created and can be used to login.
 
-   * The username is "joshuahatfield.jh@gmail.com" and the password is "password".
+* The username is "joshuahatfield.jh@gmail.com" and the password is "password".
+
+## Additional Features Which Would Be Added With More Time
+
+* Money Movement Search
+    * Novus has 30,000 users. We can assume then that there are tens (or hundreds!) of thousands of money movements each
+      month. Far too many to click through page by page.
+    * Users of the money movement viewer would benefit from being able to search through results for individual
+      movements
+    * A basic search functionality could be implemented using SQL "LIKE" statements. An API based example can be
+      found [here]("https://github.com/JoshHatfield/Covid19-Research-Paper-Viewer/blob/e4d6c70784e9ee57dc4980fc88cf4108cec82a67/search_api/app/routes/routes.py#L41)
+      .
+    * Users could then search for money movement using sender/receiver names or currency amounts.
+    * A more advanced search could be achieved by moving to a pre-built search + analytics engine like elasticsearch
+    * This could allow the user to construct more complex queries (for example show me all the movements over amount X
+      for user Z between dates a + b)
+    * This in turn would reduce the time to find key information whilst running audits. Enhancing the usability of the
+      tool
+
+* "Last Modified Date" Pagination
+    * Pagination is a core requirement when working with larger datasets. Failure to implement will lead to a noticeable
+      slow down in site speeds when display hundreds or thousands of results.
+    * Sorting money movements by last-modified date (most recent first) and splitting by date-ranges would be one
+      method.
+    * Using a last-modified date as opposed to an offset + limit prevents duplication caused by writes occurring between
+      paginated results.
+    * "Last-modified" date pagination also avoids slow-downs caused by offsetting against large row numbers
+
+* Google 0Auth Login
+    * Replacing the current login implementation with a third party identity provider (Google) would be worthwhile.
+    * Implementing the ability to login with a pre-existing google account would come with the following benefits
+        * Less friction for end user. They don't have to create a new set of login details (Novus staff all seem to use
+          google accounts)
+        * Time saved vs having to implement password reset and 2FA (two key login features not currently implemented
+          here!)
+        * Reduce risk posed by a security breach as we no longer store user password hashes!
