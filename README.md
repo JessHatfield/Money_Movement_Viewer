@@ -13,18 +13,18 @@ A small webapp for viewing money_movements between two people. Written using Fla
 * View details for an individual money_movement detailing the above plus:
     * Receiving person.
 
-* User can add notes per money_movement (and can use unicode characters).
+* Update user notes for each money_movement (and can use unicode characters).
 
-* User Authentication
+* Username + Password Authentication
     * Pre-created user login + logout.
     * Un-authenticated users are redirected to login page when accessing protected routes.
-    * Logged in users name is viewable within app.
+    * Logged-in users name is viewable within app.
 
-* Deployment
+* Docker Deployment
     * Run via Gunicorn on Ubuntu 20.04 within docker container.
-    * Log messages captured via sysout and via a rotating log file.
+    * Log messages captured via sysout and via a rotating log file handler.
 
-* Tests
+* Integration Tests
     * Integration tests covering key happy paths for app routes.
     * Integration tests covering key behaviours for backend models.
 
