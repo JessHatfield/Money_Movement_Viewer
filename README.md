@@ -42,7 +42,7 @@ The application has been dockerised for ease of use
 
 This guide assumes you have already installed docker + docker compose.
 
-### Instructions
+#### Running Docker Image
 
 Clone the repository.
 
@@ -85,6 +85,8 @@ We also assume you have installed MYSQL version 5.7 (or greater).
 
 Clone the git repository (skip this step if you have already cloned it)
 
+#### Setup Virtual Environment
+
 ```bash
   git clone https://github.com/JoshHatfield/Money_Movement_Viewer.git
 ```
@@ -113,7 +115,7 @@ Install project dependencies
 sudo python3.8 -m pip install -r app/requirements.txt
 ```
 
-Create Development + Test Databases
+#### Create Development + Test Databases
 
 Enter the MySQL shell
 
@@ -177,7 +179,9 @@ Creating User Account
 User Object Has Been Inserted Into Database
 ```
 
-Run Flask Integration Tests
+#### Run Flask Integration Tests
+
+Run route tests
 
 ```bash
 sudo python3.8 -m unittest tests/test_routes.py
@@ -189,6 +193,7 @@ Ran 7 Tests in 6.5s
 OK
 ```
 
+Run model tests
 ```bash
 sudo python3.8 -m unittest tests/test_models.py
 
@@ -199,7 +204,7 @@ OK
 
 ```
 
-Start The Flask App
+#### Start The Flask App
 
 ```bash
 sudo python3.8 -m flask run
@@ -212,8 +217,6 @@ The application can be now accessed at http://127.0.0.1:5000
 * The username is "joshuahatfield.jh@gmail.com" and the password is "password".
 
 ## An Overview of Tech Choices Made
-
-
 
 Why did we choose to build a Dynamic webapp vs a SPA?
 
@@ -256,6 +259,7 @@ and setup locally and offers similar read performance to MySQL.
     * This in turn would reduce the time to find key information whilst running audits. Enhancing the usability of the
       tool.
 
+
 * "Last Modified Date" Pagination
     * Pagination is a core requirement when working with larger datasets. Failure to implement will lead to a noticeable
       slow down in site speeds when display hundreds or thousands of results.
@@ -265,6 +269,7 @@ and setup locally and offers similar read performance to MySQL.
       paginated results.
     * "Last-modified" date pagination also avoids slow-downs caused by SQL OFFSET commands as the database grows in
       size.
+
 
 * Google 0Auth Login
     * Replacing the current login implementation with a third party identity provider (Google) would be worthwhile.
